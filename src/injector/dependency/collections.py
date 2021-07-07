@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 
 
 class Collection(ABC):
@@ -50,3 +50,35 @@ class Collection(ABC):
         Usage:
             my_collection.get(MyReferenceType)
         """
+
+
+class SingletonCollection(Collection):
+    """
+    Contain singleton objects and required to using in main 
+    dependency service to configure access to injection objects.
+    
+    Singleton objects lifetime: 
+        never dying while service is worked.
+    """
+    def __init__(
+        self
+    ) -> None:
+        self.collection: Dict[type, Any] = {}
+
+
+    def add(
+        self,
+        key: type,
+        value: Optional[Any] = None
+    ) -> None:
+        if not value:
+            self.collection[key] = key()    
+        else:
+            self.collection[key] = value
+
+
+    def get(
+        self, 
+        key: type
+    ) -> Any:
+        return self.collection[key]
